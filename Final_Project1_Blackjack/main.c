@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #define N_CARDSET			1
@@ -17,11 +18,15 @@
 
 /*
 	Q1. main function 220 n_user, dollar가 한번에 통과되면 난수 생성 오류
-	Q2. n_user, dollar 처음부터 잘 넣으면 난수 -> 값이 제대로 안나옴 
-	Q3. user는 배팅 50까지 할 수 있는데 다른 player들은 N_MAX_BET인 5 까지밖에 못함
-	Q4. void printCard(int cardnum)
-	Q5. getCardNum 실제 카드번호 계산 어떤 함수?
-	Q6. A는 처음에 1 or 11 결정해야 하는지  
+		-> n_user, dollar 처음부터 잘 넣으면 난수 -> 값이 제대로 안나옴 
+	Q2. user는 배팅 50까지 할 수 있는데 다른 player들은 N_MAX_BET인 5 까지밖에 못함
+	(X) void printCard(int cardnum)
+	(X) getCardNum 실제 카드번호 계산 어떤 함수?
+	Q3. A는 처음에 1 or 11 결정해야 하는지  
+	Q4. printf("  -> you		: ");
+	printf("%d %d\n", mixCardTray(), mixCardTray());
+	-> HRT3 CLVAce	11 3	(오른쪽에 숫자 나타나는 현상)
+	 
 
 */
 
@@ -62,17 +67,93 @@ int getIntegerInput(void) {
 //card processing functions ---------------
 
 //calculate the actual card number in the blackjack game
-int getCardNum(int cardnum) {
+int getCardNum(int *cardnum, int *i) {
+	
+	int num;
+	int s_num;
+	
+	num = (*i - 1) % 13;
+	
+	switch(num) {
+		case 0:
+			printf("Ace\t");
+			s_num = 11;
+			break;
+		case 1:
+			printf("Jack\t");
+			s_num = 10;
+			break;
+		case 2:
+			printf("Queen\t");
+			s_num = 10;
+			break;
+		case 3:
+			printf("King\t");
+			s_num = 10;
+			break;
+		default:
+			printf("%d\t", num + 1);
+			s_num = num + 1;
+	}
+	
+	return s_num;
 }
 
 //print the card information (e.g. DiaA)
-void printCard(char cardnum[N_CARD]) {
-	int i;
+void printCard(char *cardnum[N_CARD], int *i) {
+	
+	int pattern;
+	
+	pattern = (*i - 1) / 13;
+	
+	switch(pattern) {
+		case 0:
+			printf("♥");	// heart
+			break;
+		case 1:
+			printf("◆");	// diamond
+			break;
+		case 2:
+			printf("♠");	// spade
+			break;
+		case 3:
+			printf("♣");	// club
+			break;
+	}
+		
+/*	int i;
 	char HRT, DIA, SPD, CLV;	// hearts, diamonds, spades, clubs
 	int A;
 	int J = 10;
 	int Q = 10;
-	int K = 10; 
+	int K = 10;
+	*/
+	
+/*	int HRT[13];
+	int DIA[13];
+	int SPD[13];
+	int CLV[13];
+	int ran_card;
+	char val;
+	
+	for(i = 1; i <= 9; i++) {
+		val[i] = i + 1;
+	}
+	
+	val[0] = A;
+	val[10] = J;
+	val[11] = Q;
+	val[12] = K;
+	*/
+	
+//	for(j = 0; j < 13; j++) {
+//	printf("%d", val[j]);
+	
+/*	for(i = 0; i < 52; i++) {
+		ran_card = rand() % 13 + 1;
+		*cardnum[i] = ran_card;
+	}
+	*/
 	
 //	♡, ◇, ♧, ♤
 // A 2 3 4 5 6 7 8 9 10 J Q K
@@ -82,18 +163,30 @@ void printCard(char cardnum[N_CARD]) {
 // strcat : 두 문자열 붙이기
 // strcmp : 두 문자열 비교  
 
-	char val[13];		// numerical value of each shape
+/*	char val[13];		// numerical value of each shape
 	int num[9];
+	int j;
+	*/
 	
-	for(i = 0; i <= 8; i++) {
+/*	for(i = 0; i <= 8; i++) {
 		num[i] = i + 2;
 		sprintf(val[i + 1], "%d", num[i]);
+	}
+	*/
+	
+/*	for(i = 1; i <= 9; i++) {
+		val[i] = i + 1;
 	}
 	
 	val[0] = A;
 	val[10] = J;
 	val[11] = Q;
 	val[12] = K;
+	
+	for(j = 0; j < 13; j++) {
+	printf("%d", val[j]);
+	}
+	*/
 
 //	printf("%d %d", 8 << 2 = 32, 8 >> 1 = 4);
 
@@ -108,7 +201,6 @@ void printCard(char cardnum[N_CARD]) {
 	printf("%s\n", B);
 	
 	if(i = 1; i <= N_CARD >> 2; i++) {
-		
 		cardnum[i] = strcat()
 	}
 	
@@ -122,7 +214,8 @@ void printCard(char cardnum[N_CARD]) {
 	
 	else {
 		
-	}*/
+	}
+	*/
 }
 
 
@@ -130,6 +223,24 @@ void printCard(char cardnum[N_CARD]) {
 
 //mix the card sets and put in the array
 int mixCardTray(void) {
+	
+	int cardnum;
+	int mix_card;
+	int ran_num;		// nth Card
+	
+/*	for(i = 0; i < 52; i++) {
+	printCard(&cardnum, &i);
+	getCardNum(&cardnum, &i);
+	}
+	*/
+	
+	ran_num = rand() % 52 + 1;
+	
+	printCard(&cardnum, &ran_num);
+	getCardNum(&cardnum, &ran_num);
+	
+//	mix_card[i] = rand() % 
+	
 /*	int i;
 	
 	for(i = 1; i <= 52; i++) {
@@ -140,6 +251,22 @@ int mixCardTray(void) {
 
 //get one card from the tray
 int pullCard(void) {
+	
+//	int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];
+	
+	mixCardTray();
+
+/*	int i;
+	//1. give two card for each players
+	for (i = 0; i < n_user; i++) {
+		cardhold[i][0] = pullCard();
+		cardhold[i][1] = pullCard();
+	}
+
+	//2. give two card for the operator
+		cardhold[n_user][0] = pullCard();
+		cardhold[n_user][1] = pullCard();		
+	*/
 	
 /*	printf("--- server		: X cardnum[i]");
 	printf("  -> you		: X cardnum[i]");
@@ -261,7 +388,7 @@ void printUserCardStatus(int user, int cardcnt) {
 	
 	printf("   -> card : ");
 	for (i=0;i<cardcnt;i++)
-		printCard(cardhold[user][i]);
+//		printCard(cardhold[user][i]);
 	printf("\t ::: ");
 }
 
@@ -271,6 +398,21 @@ void printUserCardStatus(int user, int cardcnt) {
 // calculate the card sum and see if : 1. under 21, 2. over 21, 3. blackjack
 int calcStepResult() {
 	
+	int i;		// Number of users
+	int j;		// Number of cards for each user
+	
+	// 1. calculate the sum of each player's cards
+	for(i = 0; i < n_user; i++) {
+		for(j = 0; j <= 1; j++) {
+			cardSum[i] = cardhold[i][j];
+		}
+	}
+	
+	// 2. calculate the sum of the operator's cards
+	
+	for(j = 0; j <= 1; j++) {
+		cardSum[n_user] = cardhold[n_user][j];
+	}
 }
 
 int checkResult() {
@@ -284,24 +426,51 @@ int checkWinner() {
 
 
 int main(int argc, char *argv[]) {
+	
 	int roundIndex = 0;
 	int max_user;
-	int i;
+	int i, j;
+	int a[N_CARD];
 	
 	srand((unsigned)time(NULL));
-
 	
-/*	char A[52] = "HRT";
+/*	printf("--- server		: X ");
+	printf("%d\n", mixCardTray());
+	printf("  -> you		: ");
+	printf("%d %d\n", mixCardTray(), mixCardTray());
+	
+	for(j = 1; j < n_user - 1; j++) {
+	printf("  -> player %d		: ", j);
+	printf("%d %d\n", mixCardTray(), mixCardTray());
+	}
+	*/
+/*	printf("--- server		: X ");
+	printf("%d\n", mixCardTray());
+//	printf("  -> you		: %d %d\n", mixCardTray(), mixCardTray());
+//	printf("  -> player 1	: %d %d\n", mixCardTray(), mixCardTray());
+//	printf("  -> player 2	: %d %d\n\n", mixCardTray(), mixCardTray());
+	printf("  -> you		: ");
+	printf("%d %d\n", mixCardTray(), mixCardTray());
+	printf("  -> you		: ");
+	printf("%d\n", mixCardTray());
+	*/
+
+/*	printCard(&a[N_CARD]);
+	printf("%d", a[0]);
+
+	printCard();
+	
+	char A[52] = "HRT";
 	char B = '2';
 
 	strcat(A, B);
 	
 	printf("%s\n", A);
 	printf("%s\n", B);
-	*/
 	
-//	char HRT = getchar();
-//	printf("%c\n", HRT);
+	char HRT = getchar();
+	printf("%c\n", HRT);
+	*/
 	
 	//set the number of players
 	n_user = configUser();										
@@ -324,19 +493,41 @@ int main(int argc, char *argv[]) {
 
 	//2. card tray
 	printf("------------- CARD OFFERING -------------\n");
+	
+/*	printf("--- server		: %d %d\n", mixCardTray(), mixCardTray());
+	printf("  -> you		: %d %d\n", mixCardTray(), mixCardTray());
+	printf("  -> player 1	: %d %d\n", mixCardTray(), mixCardTray());
+	printf("  -> player 2	: %d %d\n\n", mixCardTray(), mixCardTray());
+	*/
+/*	for (i = 0; i < n_user; i++) {
+		cardhold[i][0] = pullCard();
+		cardhold[i][1] = pullCard();
+	}
 
-/*	
-	mixCardTray();
-
-
+	//2. give two card for the operator
+		cardhold[n_user][0] = pullCard();
+		cardhold[n_user][1] = pullCard();
+		
+		offerCards
+		*/
+	
+	printf("--- server		: X\t");
+	printf("%d\n", offercards());
+	printf("  -> you		: ");
+	printf("%d\t%d\n", mixCardTray(), mixCardTray());
+	
+	for(j = 1; j <= n_user - 1; j++) {
+	printf("  -> player %d		: ", j);
+	printf("%d\t%d\n", mixCardTray(), mixCardTray());
+	}
 
 	//Game start --------
-	do {
+//	do {
 		
-		betDollar();
+//		betDollar();
 		offerCards(); //1. give cards to all the players
 		
-		printCardInitialStatus();
+/*		printCardInitialStatus();
 		printf("\n------------------ GAME start --------------------------\n");
 		
 		//each player's turn
