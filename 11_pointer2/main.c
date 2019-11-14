@@ -3,12 +3,30 @@
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
-	// Practice 11-4
+	// Practice 11-5
 
 char *proverb = "All that glisters is not gold.";
 
-void setPointer(char *q) {
-	q = proverb;
+void setPointer(char **q) {
+	*q = proverb;
+}
+
+	// Practice 11-6
+
+int sum(int a, int b) {
+	return a + b;
+}
+
+int sub(int a, int b) {
+	return a - b;
+}
+
+int mul(int a, int b) {
+	return a * b;
+}
+
+int divergence(int a, int b) {
+	return a/b;
 }
 
 int main(int argc, char *argv[]) {
@@ -72,9 +90,35 @@ int main(int argc, char *argv[]) {
 	// Practice 11-5
 	
 	char *p2 = "zzz";
-	setPointer(p2);
+	setPointer(&p2);
 	printf("%s\n\n", p2);
 	
+	// Practice 11-6
 	
+	int a, b;
+	char op;
+	int (*pf)(int, int);
+	printf("calculate what :");
+	scanf("%d %c %d", &a, &op, &b);
+	
+	switch(op) {
+	case '+':
+		pf = sum;
+		break;
+	case '-':
+		pf = sub;
+		break;
+	case '*':
+		pf = mul;
+		break;
+	case '/':
+		pf = divergence;
+		break;
+	default:
+		pf = sum;
+		break;
+	}
+	
+	printf("%d\n", pf(a, b));
 	return 0;
 }
