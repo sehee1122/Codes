@@ -464,7 +464,7 @@ int betDollar(void) {
 			fflush(stdin);
 		}
 	
-		else if(bet[0] < 0) {
+		else if(bet[0] <= 0) {
 			printf("  -> invalid input for betting $(%d)\n", bet[0]);
 			printf("  -> Your betting (total: $%d): ", dollar[0]);
 			scanf("%d", &bet[0]);
@@ -551,6 +551,7 @@ int getAction(void) {
 
 	if(getCardNum(cardhold[0][0]) + getCardNum(cardhold[0][1]) == 21) {
 		printf("(@>_<@)/\n   ::: Black Jack! Congratulation, You Win!! --> +$%d ($%d)\n\n", 2*bet[0], dollar[0]);
+		stay++;		// Infinite Loop Protection
 	}
 
 	else if(cardSum[0] <= 21 && getCardNum(cardhold[0][0]) + getCardNum(cardhold[0][1]) != 21) {
@@ -797,27 +798,16 @@ int checkResult() {
 	printf("\n\n-------------------- ROUND %d result ....\n", roundIndex);
 	roundIndex += 1;
 
-	printf("  -> your result : ");
-	
-	if(cardSum[0] > 21) {
-		printf("lose due to Overflow! ($%d)\n", dollar[0]);
-	}
-	
-	else if(cardSum[0] >= cardSum[n_user]) {
-		printf("win! :-) (sum: %d) --> $%d\n", cardSum[0], dollar[0]);
-	}
-	
-	else if(cardSum[0] < cardSum[n_user]) {
-		printf("lose! ;-( (sum: %d) --> $%d\n", cardSum[0], dollar[0]);
-	}
-	
-	else {
-		printf("***ERROR***\n");
-	}
-	
-	// Adding to Card Index
-	for(i = 1; i < n_user; i++) {
-		printf("  -> player %d result : ", i);
+	for(i = 0; i <= n_user; i++) {
+		switch(i) {
+			case 0:
+				printf("  -> your result : ");
+				break;
+		
+			default:	// else if(i > 0 && i < n_user)
+				printf("  -> player %d result : ", i);
+				break;
+		}
 		
 		if(cardSum[i] > 21) {
 			printf("lose due to Overflow! ($%d)\n", dollar[i]);
@@ -835,7 +825,6 @@ int checkResult() {
 			printf("***ERROR***\n");
 		}
 	}
-	printf("\n");
 }
 
 int checkWinner() {
@@ -843,13 +832,13 @@ int checkWinner() {
 	int i;
 	int winner;		// A game Winner
 	
-	printf("Card ran out of the Tray!! Finishing the Game XD\n");
+	printf("\nCard ran out of the Tray!! Finishing the Game XD\n");
 	
 	for(i = 0; i < 3; i++) {
-		printf("\n---------------@@@@@@@@@@---------------");
+		printf("\n--------------------------------------------------");
 	}
 	
-	printf("\n\nGame End! Your Money is %d, Players's' Money is ");
+	printf("\n\nGame End! Your Money is $%d, Players's' Money is ");
 	
 	for(i = 1; i < n_user; i++) {
 		printf("$%d ", dollar[i]);
@@ -943,7 +932,6 @@ int main(int argc, char *argv[]) {
 
 	//2. card tray	
 	mixCardTray();
-	offerCards(); //1. give cards to all the players
 	
 /*	int t;
 	
@@ -962,16 +950,22 @@ int main(int argc, char *argv[]) {
 		printf("--------- ROUND %d (cardIndex: %d) ---------\n", roundIndex, cardIndex);
 		printf("-----------------------------------------\n\n");
 		
+		offerCards(); //1. give cards to all the players
+		
 		printf("------------- BETTING STEP -------------\n");
 		bet[0] = betDollar();
 		
-		for(i = 1; i <= n_user - 1; i++) {
+		for(i = 1; i < n_user; i++) {
 			bet[i] = rand() % N_MAX_BET + 1;
 			printf("  -> player%d bets $%d (out of $50)\n", i, bet[i]);
 		}
 		bet[n_user] = rand() % N_MAX_BET + 1;	// Amount of betting on the server
 
 		printf("----------------------------------------\n\n");
+		
+		if(cardIndex > 52) {
+			continue;
+		}
 		
 		printf("------------- CARD OFFERING -------------\n");
 		
@@ -1003,49 +997,71 @@ int main(int argc, char *argv[]) {
 					printf("OTL\n   ::: DEAD (sum: %d) --> -$%d ($%d)\n\n", cardSum[0], bet[0], dollar[0]);
 				}
 			}
+		}
+		
+		// Receive additional cards if the sum of the players or server cards is less than 17
+//		switch(i) {
+//			case 0:
+//				break;
+//			default:
+		for(i = 1; i <= n_user; i++) {
 			
-			// Receive additional cards if the sum of the players or server cards is less than 17
-			switch(i) {
-				case 0:
+			if(i != n_user) {
+				printf(">>> player %d turn! ----------\n", i);
+			}
+			else if(i == n_user) {
+				printf(">>> server turn! ----------\n");	// server
+			}
+			
+/*			switch(i) {
+				case 'n_user':
+					printf(">>> server turn! ----------\n");	// server
 					break;
 				default:
 					printf(">>> player %d turn! ----------\n", i);
-					while(cardSum[i] < 17 && (cardSum[0] > 21 || stay == 1)) {
-						
-						printUserCardStatus(i, Index[i]);
-						calcStepResult(i);
-						printf("GO!\n");
-						
-						cardhold[i][Index[i]] = pullCard();
-						cardSum[i] += cardhold[i][Index[i]];
-						Index[i]++;
-					}
-					
-					if(cardSum[i] > 17) {
-						printUserCardStatus(i, Index[i]);
-						calcStepResult(i);
-						
-						if(getCardNum(cardhold[i][0]) + getCardNum(cardhold[i][1]) == 21) {	
-							printf("(@>_<@)/\n   ::: Black Jack! Congratulation, You Win!! --> +$%d ($%d)\n\n", 2*bet[i], dollar[i]);
-						}
-						
-						else if(cardSum[i] <= 21 && getCardNum(cardhold[i][0]) + getCardNum(cardhold[i][1]) != 21) {
-							printf("STAY!\n\n");
-						}
-					
-						else if(cardSum[i] > 21) {
-							printf("OTL\n   ::: DEAD (sum: %d) --> -$%d ($%d)\n\n", cardSum[i], bet[i], dollar[i]);
-						}
-						
-						else {
-							printf("***ERROR***\n");
-						}
-					}
 					break;
 			}
+			*/
+			
+			while(cardSum[i] < 17) {
+//				&& (cardSum[0] > 21 || stay == 1				
+				
+				printUserCardStatus(i, Index[i]);
+				calcStepResult(i);
+				printf("GO!\n");
+				
+				cardhold[i][Index[i]] = pullCard();
+				cardSum[i] += cardhold[i][Index[i]];
+				Index[i]++;
+			}
+			
+			if(cardSum[i] > 17) {
+				printUserCardStatus(i, Index[i]);
+				calcStepResult(i);
+				
+				if(getCardNum(cardhold[i][0]) + getCardNum(cardhold[i][1]) == 21) {	
+					printf("(@>_<@)/\n   ::: Black Jack! Congratulation, You Win!! --> +$%d ($%d)\n\n", 2*bet[i], dollar[i]);
+				}
+				
+				else if(cardSum[i] <= 21 && getCardNum(cardhold[i][0]) + getCardNum(cardhold[i][1]) != 21) {
+					printf("STAY!\n\n");
+				}
+			
+				else if(cardSum[i] > 21) {
+					printf("OTL\n   ::: DEAD (sum: %d) --> -$%d ($%d)\n\n", cardSum[i], bet[i], dollar[i]);
+				}
+				
+				else {
+					printf("***ERROR***\n");
+				}
+			}
+			
+//			break;
 		}
 		
-		printf(">>> server turn! ----------\n");	// server
+		printf("[[[[[ server result is ... %d ]]]]]", cardSum[n_user]);
+		
+/*		printf(">>> server turn! ----------\n");	// server
 		while(cardSum[n_user] < 17 && (cardSum[n_user] > 21 || stay == 1)) {
 			
 			printUserCardStatus(n_user, Index[n_user]);
@@ -1078,6 +1094,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		printf("[[[[[ server result is ... %d ]]]]]", cardSum[n_user]);
+		*/
 			
 //		calcStepResult();
 			
@@ -1093,8 +1110,9 @@ int main(int argc, char *argv[]) {
 			gameEnd++;
 		}
 		
-	} while (gameEnd == 0);
+	} while (gameEnd == 0 && cardIndex <= 52);
 	
+	gameEnd++;		// A virtually unnecessary part
 	checkWinner();
 
 	return 0;
