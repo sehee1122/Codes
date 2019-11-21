@@ -18,18 +18,16 @@ extern int cardIndex;
 extern int Index[N_MAX_USER];
 extern int Ace[N_MAX_USER];			
 
-
 //player info
-extern int dollar[N_MAX_USER];						//dollars that each player has
-extern int n_user;									//number of users
-
+extern int dollar[N_MAX_USER];
+extern int n_user;
 
 //play yard information
-extern int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];	//cards that currently the players hold
-extern int cardSum[N_MAX_USER];					//sum of the cards
-extern int bet[N_MAX_USER];						//current betting 
-extern int gameEnd; 							//game end flag
-extern int stay;								// If you stop taking the Card
+extern int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];
+extern int cardSum[N_MAX_USER];
+extern int bet[N_MAX_USER];
+extern int gameEnd;
+extern int stay;
 
 
 //some utility functions
@@ -62,7 +60,6 @@ int getCardNum(int cardnum) {
 	switch(num) {
 		case 0:
 			score = 11;
-//			Ace[N_MAX_USER]++;
 			break;
 		case 1:
 			score = 10;
@@ -86,15 +83,9 @@ void printCard(int cardnum) {
 	
 	int pattern;		// Card Pattern
 	int number;			// Card Number
-
-// int CardTray[N_CARD_PATTERN][N_CARD_NUMBER];
-// int CardTray[N_CARDSET*N_CARD];
 	
 	pattern = (cardnum - 1) / 13;
 	number = (cardnum - 1) % 13;
-
-//	char *pptr[N_CARD_PATTERN] = {"♥", "◆", "♠", "♣"};
-//	char *cptr[N_CARD_NUMBER] = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};	
 	
 	switch(pattern) {
 		case 0:
@@ -128,138 +119,6 @@ void printCard(int cardnum) {
 			printf("%d ", number - 2);
 			break;
 	}
-		
-/*		switch(number) {
-			case 0:
-				CardTray[][number] = "Ace";
-				break;
-			case 1:
-				CardTray[][number] = "Jack";
-				break;
-			case 2:
-				CardTray[][number] = "Queen";
-				break;
-			case 3:
-				CardTray[][number] = "King";
-				break;
-			default:
-				CardTray[][number] = number - 2;
-		}
-		*/
-		
-/*		switch(N_CARD_NUMBER) {
-			case 0:
-				CardTray[][N_CARD_NUMBER] = "Ace";
-				break;
-			case 1:
-				CardTray[][N_CARD_NUMBER] = "Jack";
-				break;
-			case 2:
-				CardTray[][N_CARD_NUMBER] = "Queen";
-				break;
-			case 3:
-				CardTray[][N_CARD_NUMBER] = "King";
-				break;
-			default:
-				CardTray[][N_CARD_NUMBER] = N_CARD_NUMBER + 1;
-	}
-	*/
-		
-/*	int i;
-	char HRT, DIA, SPD, CLV;	// hearts, diamonds, spades, clubs
-	int A;
-	int J = 10;
-	int Q = 10;
-	int K = 10;
-	*/
-	
-/*	int HRT[13];
-	int DIA[13];
-	int SPD[13];
-	int CLV[13];
-	int ran_card;
-	char val;
-	
-	for(i = 1; i <= 9; i++) {
-		val[i] = i + 1;
-	}
-	
-	val[0] = A;
-	val[10] = J;
-	val[11] = Q;
-	val[12] = K;
-	*/
-	
-//	for(j = 0; j < 13; j++) {
-//	printf("%d", val[j]);
-	
-/*	for(i = 0; i < 52; i++) {
-		ran_card = rand() % 13 + 1;
-		*cardnum[i] = ran_card;
-	}
-	*/
-	
-//	♡, ◇, ♧, ♤
-// A 2 3 4 5 6 7 8 9 10 J Q K
-
-// strlen : 문자열 길이 
-// strcpy : 문자열 복사 
-// strcat : 두 문자열 붙이기
-// strcmp : 두 문자열 비교  
-
-/*	char val[13];		// numerical value of each shape
-	int num[9];
-	int j;
-	*/
-	
-/*	for(i = 0; i <= 8; i++) {
-		num[i] = i + 2;
-		sprintf(val[i + 1], "%d", num[i]);
-	}
-	*/
-	
-/*	for(i = 1; i <= 9; i++) {
-		val[i] = i + 1;
-	}
-	
-	val[0] = A;
-	val[10] = J;
-	val[11] = Q;
-	val[12] = K;
-	
-	for(j = 0; j < 13; j++) {
-	printf("%d", val[j]);
-	}
-	*/
-
-//	printf("%d %d", 8 << 2 = 32, 8 >> 1 = 4);
-
-/*	char A[40];
-	char B[40];
-	
-	gets(A);
-	gets(B);
-	strcat(A, B);
-	
-	printf("%s\n", A);
-	printf("%s\n", B);
-	
-	if(i = 1; i <= N_CARD >> 2; i++) {
-		cardnum[i] = strcat()
-	}
-	
-	else if(i = N_CARD + 1; i <= N_CARD >> 1; i++) {
-		
-	}
-	
-	else if(i = 2*N_CARD + 1; i <= N_CARD - (N_CARD >> 2); i++) {
-		
-	}
-	
-	else {
-		
-	}
-	*/
 }
 
 
@@ -294,60 +153,14 @@ int mixCardTray(void) {
 		temp = CardTray[j];
 		CardTray[j] = CardTray[ran_num];
 		CardTray[ran_num] = temp;
-
-//		printCard(&cardnum, &ran_num);
-//		getCardNum(&cardnum, &ran_num);
-//		*ptr = printCard(&cardnum, &ran_num);
 	}
-	
-//	return CardTray;
-	
-//	mix_card[i] = rand() % 
-	
-/*	int i;
-	
-	for(i = 1; i <= 52; i++) {
-		CardTray[i] 
-	}
-
-	for(j = 0; j < N_CARDSET * N_CARD; j++) {
-		printf("%d\n", CardTray[j]);
-	}
-	*/
 }
 
 
 //get one card from the tray
 int pullCard(void) {
 	
-//	int k;
-//	int empty;
-
-//	srand(time(NULL));
-//	ran_num = rand() % N_CARD + 1;
-
-	// The selected card is pushed to the end of the arrangement
-/*	for(k = ran_num; k < N_CARDSET * N_CARD; k++) {
-		
-		if(k + 1 < N_CARDSET * N_CARD) {
-			
-			empty = CardTray[k];
-			CardTray[k] = CardTray[k + 1];
-			CardTray[k + 1] = empty;
-		}
-	}
-	*/
-	
 	cardIndex++;
-	
 	return CardTray[cardIndex];
-	
-//	return CardTray[ran_num];
-	
-/*	printf("--- server		: X cardnum[i]");
-	printf("  -> you		: X cardnum[i]");
-	
-	for(i = 1; i < n_user; i++)
-		printf("  -> player	%d	: cardnum[j] cardnum[j]", i);
-		*/
 }
+
