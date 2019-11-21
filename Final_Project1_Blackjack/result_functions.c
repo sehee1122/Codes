@@ -18,22 +18,56 @@ extern int cardIndex;
 extern int Index[N_MAX_USER];
 extern int Ace[N_MAX_USER];			
 
+
 //player info
-extern int dollar[N_MAX_USER];
-extern int n_user;
+extern int dollar[N_MAX_USER];						//dollars that each player has
+extern int n_user;									//number of users
+
 
 //play yard information
-extern int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];
-extern int cardSum[N_MAX_USER];
-extern int bet[N_MAX_USER];
-extern int gameEnd;
-extern int stay;
+extern int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];	//cards that currently the players hold
+extern int cardSum[N_MAX_USER];					//sum of the cards
+extern int bet[N_MAX_USER];						//current betting 
+extern int gameEnd; 							//game end flag
+extern int stay;								// If you stop taking the Card
 
 
 int checkResult(int user) {
 	
 	int i, j;
 	int roundIndex = 1;
+
+/////////////////////////////////////////////////
+//////////// ERASE!!!!!!!!?????????????//////////
+/*	int i, j, k;
+	
+	for(i = 1; i < n_user; i++) {
+		printf(">>> player %d turn! ----------\n", i);
+		printf("  -> card : ");
+		
+		for(j = 0; j < Index[i]; j++) {
+//			printf("-> card : %d\t ::: GO!\n", cardhold[i][j]);
+			
+			printCard(cardhold[i][j]);
+			calcStepResult();
+
+//			if(getCardNum(cardhold[i]) < 21)
+//			GO!
+//			STAY!
+//			DEAD (sum: 25)
+		}
+		printf("\t ::: \n\n");
+	}
+	
+	printf(">>> server turn! ----------\n");
+	printf("  -> card : ");
+	
+	for(j = 0; j < Index[n_user]; j++) {
+		printCard(cardhold[n_user][j]);
+	}
+	printf("\n\n");
+	*/
+////////////////////////////////////////////////////////
 	
 	printf("\n\n-------------------- ROUND %d result ....\n", roundIndex);
 	roundIndex += 1;
@@ -44,7 +78,7 @@ int checkResult(int user) {
 				printf("  -> Your Result : ");
 				break;
 		
-			default:	// if(i > 0 && i < n_user)
+			default:	// else if(i > 0 && i < n_user)
 				printf("  -> Result of Player %d : ", user);
 				break;
 		}
@@ -68,7 +102,6 @@ int checkResult(int user) {
 		}
 	}
 }
-
 
 int checkWinner() {
 
@@ -105,5 +138,5 @@ int checkWinner() {
 			}
 		}
 	}
+	
 }
-

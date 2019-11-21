@@ -15,19 +15,21 @@
 //card tray object
 extern int CardTray[N_CARDSET*N_CARD];
 extern int cardIndex;
-extern int Index[N_MAX_USER];
+extern int Index[N_MAX_USER+1];
 extern int Ace[N_MAX_USER];			
 
+
 //player info
-extern int dollar[N_MAX_USER];
-extern int n_user;
+extern int dollar[N_MAX_USER];						//dollars that each player has
+extern int n_user;									//number of users
+
 
 //play yard information
-extern int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];
-extern int cardSum[N_MAX_USER];
-extern int bet[N_MAX_USER];
-extern int gameEnd;
-extern int stay;
+extern int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];	//cards that currently the players hold
+extern int cardSum[N_MAX_USER];					//sum of the cards
+extern int bet[N_MAX_USER];						//current betting 
+extern int gameEnd; 							//game end flag
+extern int stay;								// If you stop taking the Card
 
 
 //playing game functions -----------------------------
@@ -40,6 +42,8 @@ int configUser(void) {
 	int input;
 	
 	printf("Input the number of players (MAX:5): ");
+//	scanf("%d", &n_user);
+//	fflush(stdin);
 	n_user = getIntegerInput();
 	
 	do {
@@ -55,7 +59,19 @@ int configUser(void) {
 			printf("Input the number of players (MAX:5): ");
 			scanf("%d", &n_user);
 			fflush(stdin);
-		}		
+		}
+	
+	// when num is a character
+/*		else {
+			printf("invalid input players (-1)\n");
+			printf("Input the number of players (MAX:5): ");
+			scanf("%d", &num);
+			fflush(stdin);
+			input = getIntegerInput();
+			printf("%d", &input);
+		}
+		*/
+		
 	} while(n_user <= 0 || n_user > 5);
 	
 	printf("--> card is mixed and put into the tray\n\n");
@@ -70,6 +86,8 @@ int betDollar(void) {
 	int input;
 	
 	printf("  -> your betting (total: $%d): ", dollar[0]);
+//	scanf("%d", &dollar);
+//	fflush(stdin);
 	bet[0] = getIntegerInput();
 	
 	do {
@@ -85,7 +103,15 @@ int betDollar(void) {
 			printf("  -> Your betting (total: $%d): ", dollar[0]);
 			scanf("%d", &bet[0]);
 			fflush(stdin);
-		}		
+		}
+	
+	// when dollar is a character
+/*		else {
+			input = getIntegerInput();
+			printf("%d", &input);
+		}
+		*/
+		
 	} while(bet[0] <= 0 || bet[0] > 50);
 	
 	return bet[0];
@@ -106,7 +132,14 @@ void offerCards(void) {
 	//2. give two card for the operator
 		cardhold[n_user][0] = pullCard();
 		cardhold[n_user][1] = pullCard();
-
+	
+//	for(j = 0; j < n_user; j++) {
+//	}
+	
+	// --------------------------------------------------
+	// Avoid redundancy if random numbers are created equal
+	// --------------------------------------------------
+	
 	return;
 }
 
@@ -122,10 +155,12 @@ void printCardInitialStatus(void) {
 	
 	printf("--- server		:   X ");
 	printCard(cardhold[n_user][1]);
+//	printf("%d\n", cardhold[n_user][1]);
 	printf("\n  -> you		: ");
 	
 	for(j = 0; j < Index[0]; j++) {
 		printCard(cardhold[0][j]);
+//	printf("%d\t%d\n", printcard(cardhold[0][0]), printcard(cardhold[0][1]));
 	}
 	
 	for(i = 1; i < n_user; i++) {
@@ -133,7 +168,7 @@ void printCardInitialStatus(void) {
 		
 		for(j = 0; j < Index[0]; j++) {
 			printCard(cardhold[i][j]);
+//		printf("%d\t%d\n", cardhold[i][0], cardhold[i][1]);
 		}
 	}
 }
-
