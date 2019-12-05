@@ -6,7 +6,6 @@
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 	// Practice 13-1
-
 /*
 struct student {
 	int		ID			;
@@ -57,9 +56,16 @@ int fget_word(FILE* fp, char *word) {
 	return cnt;
 }
 
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+#define SQUARE(x)	((x) * (x))
+#define SUM(x, y)	((x) + (y))
+
 int main(int argc, char *argv[]) {
 	
-	// Practice 13-1
+	int a = 5;
+	
+	// Practice 13-1	
 /*	
 	struct student s1 = { 22, "One's own name'", 4.1};
 	s1.ID = 123456;
@@ -72,7 +78,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 	
 	printf("\n");
-*/	
+*/
 	
 	// Practice 13-2
 	
@@ -100,5 +106,11 @@ int main(int argc, char *argv[]) {
 	print_word();
 	
 	fclose(fp);
+	
+	printf("\n");
+	
+	// Practice 13-4
+	
+	printf("%d %d\n", SQUARE(a), SUM(a, 3));
 	return 0;	
 }
