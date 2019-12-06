@@ -31,12 +31,12 @@ int buildingValidityCheck(int nBuilding, int nRoom)
 		return -1;
 	}
 	
-	if (nRoom/100 <= 0 || nRoom/100 > N_FLOOR)
+	if (nRoom / 100 <= 0 || nRoom / 100 > N_FLOOR)
 	{
 		return -1;
 	}
 	
-	if (nRoom%100 <= 0 || nRoom%100 > N_ROOM)
+	if (nRoom % 100 <= 0 || nRoom % 100 > N_ROOM)
 	{
 		return -1;
 	}
