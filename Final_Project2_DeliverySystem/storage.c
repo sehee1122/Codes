@@ -71,8 +71,9 @@ static void initStorage(int x, int y) {
 	}
 	
 	// 3. int x, int y : cell coordinate to be initialized
-	x = 0;
-	y = 0;
+//	x = 0;
+//	y = 0;
+	deliverySystem[x][y] = storage_t;
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -80,11 +81,12 @@ static void initStorage(int x, int y) {
 //return : 0 - password is matching, -1 - password is not matching
 static int inputPasswd(int x, int y) {
 	
-	int passwd;
+	char passwd[PASSWD_LEN];
 	
 	// 1. get password input and check if it is correct for the cell (x,y)
 	printf("input password for (%i, %i) storage : ", x, y);
 	scanf("%d", &passwd);
+	fflush(stdin);
 /*	printf("input password for (row, column) storage : %d", storage_t.passwd);
 	storage_t.passwd = 
 	passwd[PASSWD_LEN+1];
@@ -94,7 +96,7 @@ static int inputPasswd(int x, int y) {
 //	initStorage
 	
 	// 3. return : 0 - password is matching, -1 - password is not matching
-	if(strcmp(passwd, storage_t.passwd)) {
+	if(strcmp(deliverySystem[x][y].passwd, storage_t.passwd)) {
 		return -1;
 	}
 	
@@ -182,20 +184,20 @@ void str_printStorageStatus(void) {
 	printf("----------------------------- Delivery Storage System Status (%i occupied out of %i )-----------------------------\n\n", storedCnt, systemSize[0]*systemSize[1]);
 	
 	printf("\t");
-	for (j=0;j<systemSize[1];j++)
+	for (j=0; j < systemSize[1]; j++)
 	{
-		printf(" %i\t\t",j);
+		printf(" %i\t\t", j);
 	}
 	printf("\n-----------------------------------------------------------------------------------------------------------------\n");
 	
-	for (i=0;i<systemSize[0];i++)
+	for (i = 0; i < systemSize[0]; i++)
 	{
-		printf("%i|\t",i);
-		for (j=0;j<systemSize[1];j++)
+		printf("%i|\t", i);
+		for (j = 0; j < systemSize[1]; j++)
 		{
 			if (deliverySystem[i][j].cnt > 0)
 			{
-				printf("%i,%i\t|\t", deliverySystem[i][j].building, deliverySystem[i][j].room);
+				printf("%i, %i\t|\t", deliverySystem[i][j].building, deliverySystem[i][j].room);
 			}
 			else
 			{
@@ -295,17 +297,24 @@ int str_extractStorage(int x, int y) {
 //int nBuilding, int nRoom : my building/room numbers
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
+	
 	// 1. find my package from the storage
+	int x, y;							// x = row, y = column of the delivery system
+	int cnt = 0;
 	
-
 	// 2. print all the cells (x,y) which has my package
-	
+	for(x = 0; x < systemSize[0]; x++) {
+		for(y = 0; y < systemSize[1]; y++) {
 
 	// 3. int nBuilding, int nRoom : my building/room numbers
-	
+			if(strsmp(deliverySystem[x][y].building, nBuilding) && strsmp(deliverySystem[x][y].room, nRoom)) {
 
 	//4. return : number of packages that the storage system has
-	
+				printf(" ----------> Found a package in (%i, %i)\n", x, y);
+				cnt++;					// Number of packages found
+			}
+		}
+	}
 
 	return cnt;
 }
