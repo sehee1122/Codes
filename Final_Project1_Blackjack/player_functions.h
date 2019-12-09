@@ -1,5 +1,5 @@
 #ifndef _PLAYER_H
-#define _PLAYER_h
+#define _PLAYER_H
 
 #include <stdio.h>
 #include <stdlib.h>
