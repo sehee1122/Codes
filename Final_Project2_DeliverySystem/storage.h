@@ -1,3 +1,6 @@
+#ifndef _STORAGE_H
+#define _STORAGE_H
+
 #define MAX_MSG_SIZE			100
 #define PASSWD_LEN				4
 
@@ -10,3 +13,5 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 int str_extractStorage(int x, int y);
 int str_findStorage(int nBuilding, int nRoom);
 int str_backupSystem(char* filepath);
+
+#endif

@@ -4,6 +4,7 @@
 #include "storage.h"
 
 #define _CRT_SECURE_NO_WARNINGS
+#define STORAGE_FILEPATH 		"storage.txt"
 
 /* 
   definition of storage cell structure ----
@@ -55,7 +56,8 @@ static void initStorage(int x, int y) {
 	
 	// 1. set all the member variable as an initial value
 	// Hint: x, y를 지정해주는 경우는 한 칸에 대한 내용에 대해서만 코딩할 확률이 높음 
-	struct storage_t storage_box;		// Structure variable declaration
+	storage_t storage_box;		// Structure variable declaration
+//	static storage_t *storage_box;	
 		// = { 0, 0, 0, "0000", 		// struct 'StructureName' 'VariableName'
 //	sizeof(storage_box) = 4;				// Specify structure size
 	
@@ -120,7 +122,7 @@ static int inputPasswd(int x, int y) {
 //	initStorage
 	
 	// 3. return : 0 - password is matching, -1 - password is not matching
-	if(strcmp(deliverySystem[x][y].passwd, storage_box.passwd) != 0) {
+	if(strcmp(deliverySystem[x][y].passwd, passwd) != 0) {
 		return -1;
 	}
 	return 0;
@@ -229,7 +231,7 @@ int str_createSystem(char* filepath) {
 				deliverySystem[x][y].cnt++;
 				storedCnt++;
 			}
-			storage_box = deliverySyetem[x][y];
+//			storage_box = deliverySyetem[x][y];
 		}
 		fclose(fp);						// close file pointer
 //		printf("System was successfully created\n");
@@ -308,14 +310,27 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 
 //	FILE *rfp = fopen("storage.txt", "r");
 //	FILE *wfp = fopen("storage.txt", "w");
+
+	initStorage(x, y);
 	
-	deliverySystem.building[x][y] = nBuilding;
+	storage_t storage_box;		// Structure variable declaration
+
+	storage_box.building = nBuilding;
+	storage_box.room = nRoom;
+	storage_box.cnt = 1;
+	strcpy(storage_box.passwd, passwd);	// strcpy(target, original string): copy string
+	storage_box.context = msg;
+	
+	deliverySystem[x][y] = storage_box;
+	
+/*	deliverySystem.building[x][y] = nBuilding;
 	deliverySystem.room[x][y] = nRoom;
 	deliverySystem.cnt[x][y] = 1;
 	strcpy(deliverySystem.passwd[x][y], passwd);	// strcpy(target, original string): copy string
 	storage_box.context[x][y] = msg;
 	
 	storage_box = deliverySystem[x][y];
+*/
 	
 	// 1. put a package (msg) to the cell
 //	str_checkStorage(int storage_box.x, int storage_box.y);
@@ -356,12 +371,14 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 //return : 0 - successfully extracted, -1 = failed to extract
 int str_extractStorage(int x, int y) {
 	
-	int att_passwd = 0;		// Password attempted by user
+	char att_passwd[PASSWD_LEN + 1];	// Password attempted by user
 	
 	printf(" - input password for (%d, %d) storage : ", x, y);
-	scanf("%s", &att_passwd);
+	scanf("%4s", &att_passwd);		// because of PASSWD_LEN = 4
+	fflush(stdin);
 	// 1. extract the package context with password checking
-	if(strcmp(att_passwd, deliverySystem.passwd[x][y]) != 0) {
+	if(strcmp(deliverySystem[x][y].passwd, att_passwd) != 0) {
+		// storage_box.passwd
 		printf("----------> Password is Wrong! OTL\n");		
 		return -1;
 	}
@@ -396,7 +413,7 @@ int str_findStorage(int nBuilding, int nRoom) {
 		for(y = 0; y < systemSize[1]; y++) {
 
 	// 3. int nBuilding, int nRoom : my building/room numbers
-			if(strcmp(deliverySystem[x][y].building, nBuilding) == 0 && strcmp(deliverySystem[x][y].room, nRoom) == 0) {
+			if((deliverySystem[x][y].building == nBuilding) && (deliverySystem[x][y].room == nRoom)) {
 
 	//4. return : number of packages that the storage system has
 				printf(" ---------> Found a package in (%i, %i)\n", x, y);
