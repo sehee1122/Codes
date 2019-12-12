@@ -1,10 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h>				// String-separating strtok function
 #include "storage.h"
-
-#define _CRT_SECURE_NO_WARNINGS
-#define STORAGE_FILEPATH 		"storage.txt"
 
 /* 
   definition of storage cell structure ----
@@ -56,29 +55,28 @@ static void initStorage(int x, int y) {
 	
 	// 1. set all the member variable as an initial value
 	// Hint: x, y를 지정해주는 경우는 한 칸에 대한 내용에 대해서만 코딩할 확률이 높음 
-	storage_t storage_box;		// Structure variable declaration
+//	storage_t storage_box;		// Structure variable declaration
 //	static storage_t *storage_box;	
 		// = { 0, 0, 0, "0000", 		// struct 'StructureName' 'VariableName'
 //	sizeof(storage_box) = 4;				// Specify structure size
-	
-	storage_box.building = 0;
+		
+	deliverySystem[x][y].building = 0;
+	deliverySystem[x][y].room = 0;
+	deliverySystem[x][y].cnt = 0;
+	deliverySystem[x][y].passwd[0] = '\0';
+	deliverySystem[x][y].context = '\0';
+/*	if(deliverySystem[x][y].context != NULL) {
+		free(deliverySystem[x][y].context);
+	}
+*/
+/*	storage_box.building = 0;
 	storage_box.room = 0;
 	storage_box.cnt = 0;
 	strcpy(storage_box.passwd, "0000");
 	strcpy(storage_box.context, "Reset context");
 	
 	deliverySystem[x][y] = storage_box;	// Initialize all contents of structure variable to zero
-	
-/*	
-	deliverySystem[x][y].building = 0;
-	deliverySystem[x][y].room = 0;
-	deliverySystem[x][y].cnt = 0;
-	strcpy(deliverySystem[x][y].passwd, "0000");
-	strcpy(deliverySystem[x][y].context, "Reset context");
-	
-	storage_box = deliverySystem[x][y];	// Initialize all contents of structure variable to zero
-*/
-	
+*/	
 //	struct storage_t storage
 //	X Y를 쓰자 바보야 
 	
@@ -112,7 +110,7 @@ static int inputPasswd(int x, int y) {
 	
 	// 1. get password input and check if it is correct for the cell (x,y)
 	printf("input password for (%i, %i) storage : ", x, y);
-	scanf("%4s", &passwd);			// because of PASSWD_LEN = 4
+	scanf("%4s", passwd);			// because of PASSWD_LEN = 4
 	fflush(stdin);
 /*	printf("input password for (row, column) storage : %d", storage_t.passwd);
 	storage_t.passwd = 
@@ -141,7 +139,7 @@ int str_backupSystem(char* filepath) {
 	int x, y;
 	
 	// 2. char* filepath : filepath and name to write
-	FILE *fp = fopen(STORAGE_FILEPATH, "w");		// open the "storage.txt" file in write mode
+	FILE *fp = fopen(filepath, "w");		// open the "storage.txt" file in write mode
 /*	FILE *fp;
 	fp = fopen("storage.txt", "r");
 	char *tmp = "123456789";
@@ -158,22 +156,22 @@ int str_backupSystem(char* filepath) {
 //		printf("Failed to backup\n");
 		return -1;
 	}
-	else {
-		fscanf(fp, "%d %d", systemSize[0], systemSize[1]);	// row, column in storage box
-		fscanf(fp, "%s", masterPassword[PASSWD_LEN + 1]);	// Master key
-		
+//	else {
+		fprintf(fp, "%d %d\n", systemSize[0], systemSize[1]);	// row, column in storage box
+		fprintf(fp, "%s\n", masterPassword);	// Master key
+
 		for(x = 0; x < systemSize[0]; x++) {
 			for(y = 0; y < systemSize[1]; y++) {
-				if(deliverySystem[x][y].cnt = 1) {
+				if(deliverySystem[x][y].cnt != 0) {
 					fprintf(fp, "%d %d %d %d %s %s\n", x, y, deliverySystem[x][y].building, deliverySystem[x][y].room, deliverySystem[x][y].passwd, deliverySystem[x][y].context);
 				}
 			}
 		}
 		
 //		printf("Backup was successfully done\n");
-		return 0;
-	}
-	fclose(fp);							// close file pointer
+		fclose(fp);
+//es	}
+	return 0;							// close file pointer
 }
 
 
@@ -184,6 +182,7 @@ int str_createSystem(char* filepath) {
 
 	int i;
 	int x, y;
+//	char buffer[systemSize[0]];		// Temporary space to use when reading files
 	
 	// Outline
 /*	int i;
@@ -197,45 +196,82 @@ int str_createSystem(char* filepath) {
 	//	- row, column, master password, past contexts of the delivery system
 	FILE *fp;							// fp: File Pointer
 	fp = fopen(filepath, "r");		// Open the "storage.txt" file in read mode(r)
+	
 	// 3. return : 0 - successfully created, -1 - failed to create the system
 	if(fp == NULL) {
 //		printf("Failed to create the system\n");
 		return -1;
 	}
 	else {
-		fscanf(fp, "%d %d", systemSize[0], systemSize[1]);	// row, column in storage box
-		fscanf(fp, "%s", masterPassword[PASSWD_LEN + 1]);	// Master key
-		
+		fscanf(fp, "%d %d", &systemSize[0], &systemSize[1]);	// row, column in storage box
+		fscanf(fp, "%s", masterPassword);	// Master key
+//		printf("%d %d %s", systemSize[0], systemSize[1], masterPassword);
 	// 1. create delivery system on the double pointer deliverySystem
 		// Allocate (int pointer size * length size) of dynamic memory to double pointer
 		// length of an array.
-		deliverySystem = (storage_t **)malloc(sizeof(storage_t *) * systemSize[0]);
-		
+		deliverySystem = (storage_t **)malloc(sizeof(storage_t*) * systemSize[0]);
+	
 		// Allocate (int pointer size * horizontal size) of dynamic memory by double pointer
 		// width of the array
 		for(i = 0; i < systemSize[0]; i++) {
-			deliverySystem[i] = malloc(sizeof(storage_t) * systemSize[1]);
+			deliverySystem[i] = (storage_t*)malloc(sizeof(storage_t) * systemSize[1]);
 		}
 		
-		// Setting the initial value(Reset) when the file is finished reading
-		if(feof(fp) == 0) {				// feof: End-of-File indicator
-/*				storage_box.building = 0;
-				storage_box.room = 0;
-				storage_box.cnt = 0;
-				strcpy(storage_box.passwd, "0000");
-				strcpy(storage_box.context, "Reset context");
-*/	
+		for(x = 0; x < systemSize[0]; x++) {
+			for(y = 0; y < systemSize[1]; y++) {
+				initStorage(x, y);
+			}
+		}
+
+		// (X) Setting the initial value(Reset) when the file is finished reading
+		// If the input file is valid		
+							// Unless it's the end of the file
+//		while(fgets(filepath, sizeof(filepath), fp) != NULL)	{		// feof: End-of-File indicator
+		while(EOF != fscanf(fp, "%d %d", &x, &y)) {
+//			for(j = 0; j < systemSize[0] * systemSize[1]; j++) {
 			// context is pointer
-			fprintf(fp, "%d %d %d %d %s %s", &x, &y, &deliverySystem[x][y].building, &deliverySystem[x][y].room, &deliverySystem[x][y].passwd[0], deliverySystem[x][y].context);	
-			if(deliverySystem[x][y].context != NULL) {
+				// 버퍼에 한 라인을 입력받음  
+//			fgets(buffer, sizeof(buffer), fp);
+//			if(feof(fp)) break;
+//			else fseek(fp, -1, filepath);
+//			if(fgets(deliverySystem[x][y]., sizeof(deliverySystem[x][y]), fp) = NULL)
+//			break;
+			
+//			fscanf(fp, "%d %d ", &x, &y);
+			deliverySystem[x][y].context = (char*)malloc(sizeof(char) * (MAX_MSG_SIZE + 1));
+			fscanf(fp, "%d %d %s %s", &deliverySystem[x][y].building, &deliverySystem[x][y].room, deliverySystem[x][y].passwd, deliverySystem[x][y].context);
+			deliverySystem[x][y].cnt++;
+			storedCnt++;
+			fgetc(fp);
+//			printf("%d %d %d\n", x, y, deliverySystem[x][y].cnt);
+//				deliverySystem[j][0].context = buffer[j];
+	
+	//puts(filepath);
+//			}
+
+
+//				fgets(deliverySystem[j], MAX_MSG_SIZE, fp);	// Read up to one line		
+/*		for(x = 0; x < systemSize[0]; x++) {
+			for(y = 0; y < systemSize[1]; y++) {
+//				if(deliverySystem[x][y].cnt = 1) {
+//				}
+				if(deliverySystem[x][y].context != NULL) {
 				deliverySystem[x][y].cnt++;
 				storedCnt++;
+				}
 			}
+		}
+*/
 //			storage_box = deliverySyetem[x][y];
 		}
 		fclose(fp);						// close file pointer
+
 //		printf("System was successfully created\n");
-	}	
+	}
+//	free(deliverySystem);
+	// Reverses the file pointer forward by 1 byte because of read by 1 byte
+	// to make sure that the file is at the end.
+//	storedCnt--;
 	return 0;
 }
 
@@ -248,6 +284,7 @@ void str_freeSystem(void) {
 	for(i = 0; i < systemSize[0]; i++) {
 		free(deliverySystem[i]);
 	}
+	free(deliverySystem);
 }
 
 
@@ -257,7 +294,7 @@ void str_printStorageStatus(void) {
 	printf("----------------------------- Delivery Storage System Status (%i occupied out of %i )-----------------------------\n\n", storedCnt, systemSize[0]*systemSize[1]);
 	
 	printf("\t");
-	for (j=0; j < systemSize[1]; j++)
+	for (j = 0; j < systemSize[1]; j++)
 	{
 		printf(" %i\t\t", j);
 	}
@@ -313,7 +350,13 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 
 	initStorage(x, y);
 	
-	storage_t storage_box;		// Structure variable declaration
+	deliverySystem[x][y].building = nBuilding;
+	deliverySystem[x][y].room = nRoom;
+	deliverySystem[x][y].cnt++;						// deliverySystem[x][y].cnt == 1;
+	strcpy(deliverySystem[x][y].passwd, passwd);	// strcpy(target, original string): copy string
+	deliverySystem[x][y].context = msg;
+
+/*	storage_box = deliverySystem[x][y];
 
 	storage_box.building = nBuilding;
 	storage_box.room = nRoom;
@@ -322,14 +365,6 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 	storage_box.context = msg;
 	
 	deliverySystem[x][y] = storage_box;
-	
-/*	deliverySystem.building[x][y] = nBuilding;
-	deliverySystem.room[x][y] = nRoom;
-	deliverySystem.cnt[x][y] = 1;
-	strcpy(deliverySystem.passwd[x][y], passwd);	// strcpy(target, original string): copy string
-	storage_box.context[x][y] = msg;
-	
-	storage_box = deliverySystem[x][y];
 */
 	
 	// 1. put a package (msg) to the cell
@@ -377,16 +412,20 @@ int str_extractStorage(int x, int y) {
 	scanf("%4s", &att_passwd);		// because of PASSWD_LEN = 4
 	fflush(stdin);
 	// 1. extract the package context with password checking
-	if(strcmp(deliverySystem[x][y].passwd, att_passwd) != 0) {
+	if((strcmp(deliverySystem[x][y].passwd, att_passwd) && strcmp(masterPassword, att_passwd)) != 0) {
 		// storage_box.passwd
 		printf("----------> Password is Wrong! OTL\n");		
 		return -1;
 	}
+	
 	else {
 		printf("----------> Extracting the storage (%d, %d)...\n", x, y);
 		printStorageInside(x, y);
 		initStorage(x, y);
+//		deliverySystem[x][y].cnt--;
 		storedCnt--;
+//		printf("%d", deliverySystem[x][y].cnt);
+
 		return 0;
 	}
 
@@ -417,10 +456,10 @@ int str_findStorage(int nBuilding, int nRoom) {
 
 	//4. return : number of packages that the storage system has
 				printf(" ---------> Found a package in (%i, %i)\n", x, y);
-				cnt++;					// Number of packages found
+				cnt++;	// Number of packages found
 			}
 		}
 	}
-
 	return cnt;
 }
+
