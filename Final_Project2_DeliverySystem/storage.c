@@ -166,7 +166,6 @@ int str_createSystem(char* filepath) {
 			fscanf(fp, "%d %d %s %s", &deliverySystem[x][y].building, &deliverySystem[x][y].room, deliverySystem[x][y].passwd, deliverySystem[x][y].context);
 			deliverySystem[x][y].cnt++;
 			storedCnt++;
-			fgetc(fp);
 		}
 		fclose(fp);		// close file pointer
 	}
@@ -178,11 +177,18 @@ int str_createSystem(char* filepath) {
 void str_freeSystem(void) {
 	
 	int i;
+	int x, y;
 	
 	for(i = 0; i < systemSize[0]; i++) {
 		free(deliverySystem[i]);
 	}
 	free(deliverySystem);
+	
+	for(x = 0; x < systemSize[0]; x++) {
+		for(y = 0; y < systemSize[1]; y++) {
+			free(deliverySystem[x][y].context);
+		}
+	}
 }
 
 
@@ -286,6 +292,7 @@ int str_extractStorage(int x, int y) {
 		printStorageInside(x, y);
 		initStorage(x, y);
 		storedCnt--;
+		free(deliverySystem[x][y].context);
 		return 0;
 	}
 }
